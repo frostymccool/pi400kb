@@ -9,12 +9,17 @@ case $1 in
         # echo 0 > /sys/class/leds/led0/brightness
        # rpi-keyboard-config effect 6 # Breathing
         rpi-keyboard-config effect 15 --speed 50 # Cycle Up Down
-        sleep 2
+        for i in 194 133; do 
+                rpi-keyboard-config brightness $i
+        done
         rpi-keyboard-config effect 0
+        rpi-keyboard-config brightness 255
         ;;
     1) # Grabbed
         # echo 1 > /sys/class/leds/led0/brightness
-      #  rpi-keyboard-config effect 15 # Cycle Up Down
+        rpi-keyboard-config effect 21 # Dual Beacon
+        rpi-keyboard-config brightness 255
+      #  sleep 0.5
         rpi-keyboard-config effect 29 # Typing Heatmap
       #  rpi-keyboard-config effect 31 # Solid Reactive Simple
       #  rpi-keyboard-config effect 36 # Solid Reactive Multicross
