@@ -47,12 +47,13 @@ Pi 400 KB supports the official Raspberry Pi Mouse VID:PID = 093a:2510 by defaul
 
 ### Autostart
 
+*With later OS 'pi' username is no longer a default, update the default hook location as we make*
+
 ```
 sudo cp pi400kb /usr/bin/pi400kb
-sudo systemctl edit --force --full pi400kb.service
+sudo cp ../hook.sh /usr/local/pi400kb-hook.sh
+sudo SYSTEMD_EDITOR="cp ../pi400kb.service" systemctl edit --force --full pi400kb.service
 ```
-
-Add the contents of the `pi400kb.service` file.
 
 Start the service and check its status:
 
@@ -75,7 +76,9 @@ sudo cp pi400kb.conf /etc/modules-load.d/
 
 ## Building & Contributing
 
-### Building
+*With later OS 'pi' username is no longer a default, update the default hook location as we make*
+
+### Building for Pi <500
 
 ```
 sudo apt install libconfig-dev git cmake
@@ -84,19 +87,48 @@ cd pi400kb
 git submodule update --init
 mkdir build
 cd build
-cmake ..
+cmake ..  -DHOOK_PATH=/usr/local/pi400kb-hook.sh
 make
 ```
 
 ### Building for Pi 500
 
-Replace the `cmake ..` command above with:
+Replacing the `cmake ..` command with version for Pi 500:
 
 ```
-cmake .. -DKEYBOARD_VID=0x2e8a -DKEYBOARD_PID=0x0010 -DKEYBOARD_DEV=/dev/input/by-id/usb-Raspberry_Pi_Ltd_Pi_500_Keyboard-event-kbd
+sudo apt install libconfig-dev git cmake
+git clone https://github.com/Gadgetoid/pi400kb
+cd pi400kb
+git submodule update --init
+mkdir build
+cd build
+cmake .. -DKEYBOARD_VID=0x2e8a -DKEYBOARD_PID=0x0010 -DKEYBOARD_DEV=/dev/input/by-id/usb-Raspberry_Pi_Ltd_Pi_500_Keyboard-event-kbd -DHOOK_PATH=/usr/local/pi400kb-hook.sh
+make
 ```
 
 (thanks to 57r31 for the above command)
+
+### Building for Pi 500+
+
+Keyboard PID differs between 500(0x0010) and 500+(0x0011):
+
+```
+sudo apt install libconfig-dev git cmake
+git clone https://github.com/Gadgetoid/pi400kb
+cd pi400kb
+git submodule update --init
+mkdir build
+cd build
+cmake .. -DKEYBOARD_VID=0x2e8a -DKEYBOARD_PID=0x0011 -DKEYBOARD_DEV=/dev/input/by-id/usb-Raspberry_Pi_Ltd_Pi_500_Keyboard-event-kbd -DHOOK_PATH=/usr/local/pi400kb-hook.sh
+make
+```
+### Custom LED controls (500+)
+
+```
+sudo rpi-keyboard-fw-update
+sudo apt update
+sudo apt install rpi-keyboard-fw-update rpi-keyboard-config brightnessctl
+```
 
 ### Custom Mouse/Keyboard Devices
 
